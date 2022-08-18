@@ -13,16 +13,18 @@ local Matter = {
 export type BaseController = {
 	_init: () -> ();
 	_ready: () -> ();
-	_process: (dt: number) -> ();
-	_physics_process: (dt: number) -> ();
+	_render: (dt: number) -> ();
+	_step: (time: number, dt: number) -> ();
+	_beat: (dt: number) -> ();
 }
 
 local function newController(): BaseController
 	local NewBaseController: BaseController = {
 		_init = function() end;
 		_ready = function() end;
-		_process = function(dt: number) end;
-		_physics_process = function(dt: number) end;
+		_render = function(dt: number) end;
+		_step = function(time: number, dt: number) end;
+		_beat = function(dt: number) end;
 	}
 
 	return NewBaseController
@@ -73,15 +75,21 @@ function Matter.ReadyControllers()
 	return Promise.all(ReadyFunctions)
 end
 
-function Matter.ProcessControllers(dt: number)
+function Matter.Render(dt: number)
 	for _, Controller in pairs(Matter.Controllers) do
-		Controller._process(dt)
+		Controller._render(dt)
 	end
 end
 
-function Matter.PhysicsProcessControllers(dt: number)
+function Matter.Step(time: number, dt: number)
 	for _, Controller in pairs(Matter.Controllers) do
-		Controller._physics_process(dt)
+		Controller._step(time, dt)
+	end
+end
+
+function Matter.Beat(dt: number)
+	for _, Controller in pairs(Matter.Controllers) do
+		Controller._beat(dt)
 	end
 end
 
@@ -92,8 +100,9 @@ function Matter.StartRunning()
 		return Matter.ReadyControllers()
 	end)
 	:andThen(function()
-		RunService.RenderStepped:Connect(Matter.ProcessControllers)
-		RunService.Stepped:Connect(Matter.PhysicsProcessControllers)
+		RunService.RenderStepped:Connect(Matter.Render)
+		RunService.Stepped:Connect(Matter.Step)
+		RunService.Heartbeat:Connect(Matter.Beat)
 	end)
 	:catch(function(err)
 		print("Error initializing controllers: ", err)
