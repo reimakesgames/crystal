@@ -18,23 +18,17 @@ export type BaseController = {
 	_beat: (dt: number) -> ();
 }
 
-local function newController(): BaseController
-	local NewBaseController: BaseController = {
-		_init = function() end;
-		_ready = function() end;
-		_render = function(dt: number) end;
-		_step = function(time: number, dt: number) end;
-		_beat = function(dt: number) end;
-	}
-
-	return NewBaseController
-end
+local BaseController: BaseController = {
+	_init = function() end;
+	_ready = function() end;
+	_render = function(dt: number) end;
+	_step = function(time: number, dt: number) end;
+	_beat = function(dt: number) end;
+}
 
 function Matter.new(name: string, level: number, controller: table?): nil
 	-- level 1 is first to load, and higher is later
-	local NewController = newController()
-	controller.__index = NewController
-	Matter.Controllers[name] = controller
+	Matter.Controllers[name] = setmetatable(controller, {__index = BaseController})
 	Matter.__ControllerLevel[name] = level
 end
 
