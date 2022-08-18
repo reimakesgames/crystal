@@ -33,18 +33,7 @@ end
 function Matter.new(name: string, level: number, controller: table?): nil
 	-- level 1 is first to load, and higher is later
 	local NewController = newController()
-	if not controller._init then
-		controller._init = NewController._init
-	end
-	if not controller._ready then
-		controller._ready = NewController._ready
-	end
-	if not controller._process then
-		controller._process = NewController._process
-	end
-	if not controller._physics_process then
-		controller._physics_process = NewController._physics_process
-	end
+	controller.__index = NewController
 	Matter.Controllers[name] = controller
 	Matter.__ControllerLevel[name] = level
 end
