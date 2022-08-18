@@ -89,24 +89,17 @@ end
 
 -- run
 function Matter.StartRunning()
-	local InitializePromise
-	local ReadyPromise
-
-	InitializePromise = Matter.InitializeControllers()
-	InitializePromise:andThen(function()
-		ReadyPromise = Matter.ReadyControllers()
-	end):catch(function(err)
+	Matter.InitializeControllers()
+	:andThen(function()
+		return Matter.ReadyControllers()
+	end)
+	:andThen(function()
+		RunService.RenderStepped:Connect(Matter.ProcessControllers)
+		RunService.Stepped:Connect(Matter.PhysicsProcessControllers)
+	end)
+	:catch(function(err)
 		print("Error initializing controllers: ", err)
 	end)
-
-	if ReadyPromise then
-		ReadyPromise:andThen(function()
-			RunService.RenderStepped:Connect(Matter.ProcessControllers)
-			RunService.Stepped:Connect(Matter.PhysicsProcessControllers)
-		end):catch(function(err)
-			print("Error readying controllers: ", err)
-		end)
-	end
 end
 -- end run
 
