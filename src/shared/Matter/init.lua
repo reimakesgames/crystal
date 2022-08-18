@@ -64,11 +64,9 @@ function Matter.ReadyControllers()
 
 	for i = 1, CONTROLLER_DEPTH do
 		for Name, Level in Matter.__ControllerLevel do
-			if not Level == i then
-				continue
+			if Level == i then
+				table.insert(ReadyFunctions, Promise.promisify(Matter.Controllers[Name]._ready)())
 			end
-
-			table.insert(ReadyFunctions, Promise.promisify(Matter.Controllers[Name]._ready)())
 		end
 	end
 
