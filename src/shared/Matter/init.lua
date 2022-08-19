@@ -16,7 +16,7 @@ function Matter.new(name: string, level: number, controller: table?): nil
 	Matter.Controllers[name] = setmetatable(controller, {__index = NewController})
 end
 
-function Matter.InitializeControllers()
+local function InitializeControllers()
 	local InitializeFunctions = {}
 	for Index, Controller in Matter.Controllers do
 		InitializeFunctions[Index] = Promise.promisify(Controller._init)()
@@ -24,12 +24,8 @@ function Matter.InitializeControllers()
 	return Promise.all(InitializeFunctions)
 end
 
-function Matter.ReadyControllers()
+local function ReadyControllers()
 	local ReadyFunctions = {}
-	-- for Index, Controller in pairs(Matter.Controllers) do
-	-- 	ReadyFunctions[Index] = Promise.promisify(Controller._ready)()
-	-- end
-
 	for i = 1, CONTROLLER_DEPTH do
 		for Name, Controller: BaseController.Controller in Matter.Controllers do
 			if Controller.Level == i then
@@ -41,19 +37,19 @@ function Matter.ReadyControllers()
 	return Promise.all(ReadyFunctions)
 end
 
-function Matter.Render(dt: number)
+local function Render(dt: number)
 	for _, Controller in Matter.Controllers do
 		Controller._render(dt)
 	end
 end
 
-function Matter.Step(time: number, dt: number)
+local function Step(time: number, dt: number)
 	for _, Controller in Matter.Controllers do
 		Controller._step(time, dt)
 	end
 end
 
-function Matter.Beat(dt: number)
+local function Beat(dt: number)
 	for _, Controller in Matter.Controllers do
 		Controller._beat(dt)
 	end
@@ -61,14 +57,14 @@ end
 
 -- run
 function Matter.StartRunning()
-	Matter.InitializeControllers()
+	InitializeControllers()
 	:andThen(function()
-		return Matter.ReadyControllers()
+		return ReadyControllers()
 	end)
 	:andThen(function()
-		RunService.RenderStepped:Connect(Matter.Render)
-		RunService.Stepped:Connect(Matter.Step)
-		RunService.Heartbeat:Connect(Matter.Beat)
+		RunService.RenderStepped:Connect(Render)
+		RunService.Stepped:Connect(Step)
+		RunService.Heartbeat:Connect(Beat)
 	end)
 	:catch(function(err)
 		print("Something went wrong with the bootup process:\n", err)
