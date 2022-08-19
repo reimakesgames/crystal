@@ -1,4 +1,6 @@
-export type BaseController = {
+export type Controller = {
+	Name: string;
+	Level: number;
 	_init: () -> ();
 	_ready: () -> ();
 	_render: (dt: number) -> ();
@@ -8,14 +10,17 @@ export type BaseController = {
 
 local Controller = {}
 
-function Controller.new(): BaseController
-	local NewController = {}
-	NewController._init = function() end
-	NewController._ready = function() end
-	NewController._render = function(dt: number) end
-	NewController._step = function(time: number, dt: number) end
-	NewController._beat = function(dt: number) end
-	return NewController :: BaseController
+function Controller.new(name: string, level: number): Controller
+	local NewController: Controller = {
+		Name = name;
+		Level = level;
+		_init = function() end,
+		_ready = function() end,
+		_render = function(dt: number) end,
+		_step = function(time: number, dt: number) end,
+		_beat = function(dt: number) end,
+	}
+	return NewController
 end
 
 return Controller

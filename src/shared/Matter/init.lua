@@ -13,7 +13,8 @@ local Matter = {
 
 function Matter.new(name: string, level: number, controller: table?): nil
 	-- level 1 is first to load, and higher is later
-	Matter.Controllers[name] = setmetatable(controller, {__index = BaseController.new()})
+	local NewController = BaseController.new()
+	Matter.Controllers[name] = setmetatable(controller, {__index = NewController})
 	Matter.__ControllerLevel[name] = level
 end
 
@@ -73,7 +74,7 @@ function Matter.StartRunning()
 		RunService.Heartbeat:Connect(Matter.Beat)
 	end)
 	:catch(function(err)
-		print("Error initializing controllers: ", err)
+		print("Something went wrong with the bootup process:\n", err)
 	end)
 end
 -- end run
