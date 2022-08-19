@@ -8,22 +8,19 @@ local BaseController = require(script.BaseController)
 
 local Matter = {
 	Controllers = {};
-	__ControllerLevel = {}
 }
 
 function Matter.new(name: string, level: number, controller: table?): nil
 	-- level 1 is first to load, and higher is later
-	local NewController = BaseController.new()
+	local NewController = BaseController.new(name, level)
 	Matter.Controllers[name] = setmetatable(controller, {__index = NewController})
-	Matter.__ControllerLevel[name] = level
 end
 
 function Matter.InitializeControllers()
 	local InitializeFunctions = {}
-	for Index, Controller in pairs(Matter.Controllers) do
+	for Index, Controller in Matter.Controllers do
 		InitializeFunctions[Index] = Promise.promisify(Controller._init)()
 	end
-
 	return Promise.all(InitializeFunctions)
 end
 
@@ -34,8 +31,8 @@ function Matter.ReadyControllers()
 	-- end
 
 	for i = 1, CONTROLLER_DEPTH do
-		for Name, Level in Matter.__ControllerLevel do
-			if Level == i then
+		for Name, Controller: BaseController.Controller in Matter.Controllers do
+			if Controller.Level == i then
 				table.insert(ReadyFunctions, Promise.promisify(Matter.Controllers[Name]._ready)())
 			end
 		end
@@ -45,19 +42,19 @@ function Matter.ReadyControllers()
 end
 
 function Matter.Render(dt: number)
-	for _, Controller in pairs(Matter.Controllers) do
+	for _, Controller in Matter.Controllers do
 		Controller._render(dt)
 	end
 end
 
 function Matter.Step(time: number, dt: number)
-	for _, Controller in pairs(Matter.Controllers) do
+	for _, Controller in Matter.Controllers do
 		Controller._step(time, dt)
 	end
 end
 
 function Matter.Beat(dt: number)
-	for _, Controller in pairs(Matter.Controllers) do
+	for _, Controller in Matter.Controllers do
 		Controller._beat(dt)
 	end
 end
