@@ -4,7 +4,7 @@ local IsClient = RunService:IsClient()
 
 local Promise = require(script.Promise)
 
-local BaseController = require(script.Shard)
+local BaseController = require(script.BaseController)
 
 local Crystal = {
 	Controllers = {};
