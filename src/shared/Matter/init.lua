@@ -1,34 +1,19 @@
 local RunService = game:GetService("RunService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local CONTROLLER_DEPTH = 4 -- how many controllers you've nested
 
 local Promise = require(script.Promise)
+
+local BaseController = require(script.BaseController)
 
 local Matter = {
 	Controllers = {};
 	__ControllerLevel = {}
 }
 
-export type BaseController = {
-	_init: () -> ();
-	_ready: () -> ();
-	_render: (dt: number) -> ();
-	_step: (time: number, dt: number) -> ();
-	_beat: (dt: number) -> ();
-}
-
-local BaseController: BaseController = {
-	_init = function() end;
-	_ready = function() end;
-	_render = function(dt: number) end;
-	_step = function(time: number, dt: number) end;
-	_beat = function(dt: number) end;
-}
-
 function Matter.new(name: string, level: number, controller: table?): nil
 	-- level 1 is first to load, and higher is later
-	Matter.Controllers[name] = setmetatable(controller, {__index = BaseController})
+	Matter.Controllers[name] = setmetatable(controller, {__index = BaseController.new()})
 	Matter.__ControllerLevel[name] = level
 end
 
