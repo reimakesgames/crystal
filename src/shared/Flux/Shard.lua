@@ -1,4 +1,4 @@
-export type Controller = {
+export type Shard = {
 	Name: string;
 	Level: number;
 	_init: () -> ();
@@ -8,10 +8,10 @@ export type Controller = {
 	_beat: (dt: number) -> ();
 }
 
-local Controller = {}
+local Shard = {}
 
-function Controller.new(name: string, level: number): Controller
-	local NewController: Controller = {
+function Shard.new(name: string, level: number): Shard
+	local NewController: Shard = {
 		Name = name;
 		Level = level;
 		_init = function() end,
@@ -23,4 +23,4 @@ function Controller.new(name: string, level: number): Controller
 	return NewController
 end
 
-return Controller
+return Shard

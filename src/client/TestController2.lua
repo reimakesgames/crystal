@@ -1,17 +1,17 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Matter = require(ReplicatedStorage.Shared.Matter)
-local Controllers = Matter.Controllers
+local Flux = require(ReplicatedStorage.Shared.Flux)
+local Shards = Flux.Shards
 
-local Module = {}
+local Shard = {}
 
-function Module._init()
+function Shard._init()
 	print("test controller2 init")
 end
 
-function Module._ready()
+function Shard._ready()
 	print("test controller2 ready")
 
-	Controllers.TC.Cross()
+	Shards.TC.Cross()
 end
 
-return Module
+return Shard

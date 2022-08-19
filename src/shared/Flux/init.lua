@@ -4,21 +4,21 @@ local CONTROLLER_DEPTH = 4 -- how many controllers you've nested
 
 local Promise = require(script.Promise)
 
-local BaseController = require(script.BaseController)
+local Shard = require(script.Shard)
 
-local Matter = {
-	Controllers = {};
+local Flux = {
+	Shards = {};
 }
 
-function Matter.new(name: string, level: number, controller: table?): nil
+function Flux.new(name: string, level: number, controller: table?): nil
 	-- level 1 is first to load, and higher is later
-	local NewController = BaseController.new(name, level)
-	Matter.Controllers[name] = setmetatable(controller, {__index = NewController})
+	local NewController = Shard.new(name, level)
+	Flux.Shards[name] = setmetatable(controller, {__index = NewController})
 end
 
 local function InitializeControllers()
 	local InitializeFunctions = {}
-	for Index, Controller in Matter.Controllers do
+	for Index, Controller in Flux.Shards do
 		InitializeFunctions[Index] = Promise.promisify(Controller._init)()
 	end
 	return Promise.all(InitializeFunctions)
@@ -27,9 +27,9 @@ end
 local function ReadyControllers()
 	local ReadyFunctions = {}
 	for i = 1, CONTROLLER_DEPTH do
-		for Name, Controller: BaseController.Controller in Matter.Controllers do
+		for Name, Controller: Shard.Shard in Flux.Shards do
 			if Controller.Level == i then
-				table.insert(ReadyFunctions, Promise.promisify(Matter.Controllers[Name]._ready)())
+				table.insert(ReadyFunctions, Promise.promisify(Flux.Shards[Name]._ready)())
 			end
 		end
 	end
@@ -38,25 +38,25 @@ local function ReadyControllers()
 end
 
 local function Render(dt: number)
-	for _, Controller in Matter.Controllers do
+	for _, Controller in Flux.Shards do
 		Controller._render(dt)
 	end
 end
 
 local function Step(time: number, dt: number)
-	for _, Controller in Matter.Controllers do
+	for _, Controller in Flux.Shards do
 		Controller._step(time, dt)
 	end
 end
 
 local function Beat(dt: number)
-	for _, Controller in Matter.Controllers do
+	for _, Controller in Flux.Shards do
 		Controller._beat(dt)
 	end
 end
 
 -- run
-function Matter.StartRunning()
+function Flux.StartRunning()
 	InitializeControllers()
 	:andThen(function()
 		return ReadyControllers()
@@ -72,4 +72,4 @@ function Matter.StartRunning()
 end
 -- end run
 
-return Matter
+return Flux
