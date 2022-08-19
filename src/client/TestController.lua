@@ -1,19 +1,19 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Crystal = require(ReplicatedStorage.Shared.Crystal)
-local Shards = Crystal.Shards
+local Controllers = Crystal.Controllers
 
-local Shard = {}
+local Controller = {}
 
-function Shard._init()
+function Controller._init()
 	print("test controller init")
 end
 
-function Shard._ready()
+function Controller._ready()
 	print("test controller ready")
 end
 
-function Shard.Cross()
+function Controller.Cross()
 	print("test controller cross access")
 end
 
-return Shard
+return Controller
