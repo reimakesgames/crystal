@@ -1,8 +1,12 @@
 local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Packages = ReplicatedStorage.Packages
+
 local IsServer = RunService:IsServer()
 local IsClient = RunService:IsClient()
 
-local Promise = require(script.Promise)
+local Promise = require(Packages.promise)
 
 local BaseController = require(script.BaseController)
 
