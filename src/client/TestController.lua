@@ -1,6 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Flux = require(ReplicatedStorage.Shared.Flux)
-local Shards = Flux.Shards
+local Crystal = require(ReplicatedStorage.Shared.Crystal)
+local Shards = Crystal.Shards
 
 local Shard = {}
 

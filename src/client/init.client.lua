@@ -1,7 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Flux = require(ReplicatedStorage.Shared.Flux)
+local Crystal = require(ReplicatedStorage.Shared.Crystal)
 
-Flux.new("TC", 1, require(script.TestController))
-Flux.new("TC2", 2, require(script.TestController2))
+Crystal.new("TC", 1, require(script.TestController))
+Crystal.new("TC2", 2, require(script.TestController2))
 
-Flux.StartRunning()
+Crystal.StartRunning()
