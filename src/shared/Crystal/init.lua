@@ -51,21 +51,21 @@ local function ReadyControllers()
 	return Promise.all(ReadyFunctions)
 end
 
-local function Render(dt: number)
+local function Render(deltaTime: number)
 	for _, Controller in Crystal.Controllers do
-		Controller._render(dt)
+		Controller._render(deltaTime)
 	end
 end
 
-local function Step(time: number, dt: number)
+local function Step(time: number, deltaTime: number)
 	for _, Controller in Crystal.Controllers do
-		Controller._step(time, dt)
+		Controller._step(time, deltaTime)
 	end
 end
 
-local function Beat(dt: number)
+local function Beat(deltaTime: number)
 	for _, Controller in Crystal.Controllers do
-		Controller._beat(dt)
+		Controller._beat(deltaTime)
 	end
 end
 
