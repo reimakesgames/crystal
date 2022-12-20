@@ -3,11 +3,11 @@
 registry = "test"
 
 [[package]]
-name = "asiatico/crystal"
-version = "0.1.0"
-dependencies = [["promise", "evaera/promise@4.0.0"]]
-
-[[package]]
 name = "evaera/promise"
 version = "4.0.0"
 dependencies = []
+
+[[package]]
+name = "reimakesgames/crystal"
+version = "0.1.0"
+dependencies = [["promise", "evaera/promise@4.0.0"]]
